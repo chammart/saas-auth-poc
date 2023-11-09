@@ -2,11 +2,11 @@
 
 SaaS AuthN/Z Demo is a sample application that explains the concepts of authentication/authorization on AWS for SaaS products and implements them with Amazon Cognito.
 
-Disclaimer: This application [SaaS AuthN/Z Workshop](https://catalog.us-east-1.prod.workshops.aws/workshops/9180bbda-7747-4b8f-ac05-14e7f258fcea) This is a Proof Of Concept (POC). The purpose is to learn the features of Amazon Cognito & Amazon Verified Permissions and design patterns in SaaS. It is not intended to be used in production operations, so please consider carefully before using some of the code assets in this repository for your own products.
+Disclaimer: This application [SaaS AuthN/Z Workshop](https://catalog.us-east-1.prod.workshops.aws/workshops/9180bbda-7747-4b8f-ac05-14e7f258fcea) This is educational content that is intended to be used in、Amazon Cognito The purpose is to learn the features of Amazon Verified Permissions and design patterns in SaaS. It is not intended to be used in production operations, so please consider carefully before using some of the code assets in this repository for your own products.
 
 ## table of contents
 * [Concept](#Concept)
-* [Deployment](#Deployment)
+* [Deployment method](#Deployment method)
 * [Architecture](#architecture)
 * [Scenario](#Scenario)
   * [Execute onboarding process](/docs/onboarding.md)
@@ -29,7 +29,7 @@ Regarding access control, [this article](https://aws.amazon.com/jp/builders-flas
 
 This sample application shows an example of how to implement these SaaS authentication concepts using Amazon Cognito and Amazon Verified Permissions.
 
-## Deployment
+## How to deploy
 
 [Deployment method](/docs/how-to-deploy.md)Please follow the steps to deploy.
 

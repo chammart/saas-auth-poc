@@ -1,0 +1,9 @@
+{
+  "CdkStack": {
+    "shcappcognitouserPoolshcappcognitouserpoolclientID0DC1AC06": "2fpositn8p31otpmrh92q2nmra",
+    "shcappcognitouserPoolshcappcognitouserpoolIDAFAD4F75": "us-east-1_IpqaLgYhA",
+    "shcAuthApishcauthapiEndpointA0E380E8": "https://4fehrige7e.execute-api.us-east-1.amazonaws.com/prod/",
+    "shcAuthApiRestApiNameB6457AB4": "shc-auth-api",
+    "shcAuthApiapiUrl768BA9E9": "https://4fehrige7e.execute-api.us-east-1.amazonaws.com/prod/"
+  }
+}
