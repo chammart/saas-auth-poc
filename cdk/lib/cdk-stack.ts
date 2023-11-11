@@ -1,10 +1,10 @@
 import * as cdk from "aws-cdk-lib";
 import { Construct } from "constructs";
-import { ShcAuthApi } from "./auth-api";
 import { ShcAppCognitoUserPool } from "./cognito";
 import { ShcDatabase } from "./database";
 import { ShcEventbus } from "./eventbus";
-import { ShcService } from "./lambdas";
+import { ShcTenantApi } from "./tenant-api";
+import { ShcTenantService } from "./tenant-service";
 
 export class CdkStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -32,25 +32,24 @@ export class CdkStack extends cdk.Stack {
     // ========================================================================
     // Provision lambdas
     // ========================================================================
-    const shcService = new ShcService(this, "shc-lambdas", {
+    const shcTenantService = new ShcTenantService(this, "shc-tenant-service", {
       userPoolId: shcAppCognitoUserPool.userPoolId,
       userPoolClientId: shcAppCognitoUserPool.userPoolClientId,
-      userTable: shcDatabase.userTable,
       tenantTable: shcDatabase.userTable,
       eventbus: shcEventbus.eventBus,
     });
 
     // ========================================================================
-    // Provision auth api
+    // Provision tenant api
     // ========================================================================
-    const shcAuthApi = new ShcAuthApi(this, "shc-AuthApi", {
-      signupFn: shcService.signupFn,
-      signinFn: shcService.signinFn,
-      confirmSignupFn: shcService.confirmSignupFn,
-      signoutFn: shcService.signoutFn,
-      currentUserFn: shcService.currentUserFn,
-      postConfirmationFn: shcService.postConfirmationFn,
-      preTokenGenerationFn: shcService.preTokenGenerationFn,
+    const shcTenantApi = new ShcTenantApi(this, "shc-Tenant-api", {
+      signupFn: shcTenantService.signupFn,
+      signinFn: shcTenantService.signinFn,
+      confirmSignupFn: shcTenantService.confirmSignupFn,
+      signoutFn: shcTenantService.signoutFn,
+      currentUserFn: shcTenantService.currentUserFn,
+      postConfirmationFn: shcTenantService.postConfirmationSignupFn,
+      preTokenGenerationFn: shcTenantService.preTokenGenerationFn,
     });
   }
 }

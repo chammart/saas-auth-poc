@@ -5,32 +5,32 @@ import * as iam from "aws-cdk-lib/aws-iam";
 import * as lambda from "aws-cdk-lib/aws-lambda";
 import { Construct } from "constructs";
 
-interface ShcServicesProps {
+interface ShcTenantServiceProps {
   // the userpool
   readonly userPoolId: string;
   readonly userPoolClientId: string;
 
   // the tables
   readonly tenantTable: ddb.ITable;
-  readonly userTable: ddb.ITable;
+  // readonly userTable: ddb.ITable;
 
   // the event bus
   readonly eventbus: EventBus;
 }
 
-export class ShcService extends Construct {
+export class ShcTenantService extends Construct {
   public readonly signupFn: lambda.Function;
   public readonly signoutFn: lambda.Function;
   public readonly confirmSignupFn: lambda.Function;
   public readonly signinFn: lambda.Function;
   public readonly currentUserFn: lambda.Function;
-  public readonly postConfirmationFn: lambda.Function;
+  public readonly postConfirmationSignupFn: lambda.Function;
   public readonly preTokenGenerationFn: lambda.Function;
 
   // the layer for the common features
   public readonly layer: lambda.LayerVersion;
 
-  constructor(scope: Construct, id: string, props: ShcServicesProps) {
+  constructor(scope: Construct, id: string, props: ShcTenantServiceProps) {
     super(scope, id);
 
     // ----------------------------------------
@@ -51,8 +51,8 @@ export class ShcService extends Construct {
     this.signupFn = this.createService(
       this,
       "signup",
-      "auth",
-      props.userTable,
+      "tenant",
+      props.tenantTable,
       props.eventbus,
       this.layer
     );
@@ -72,8 +72,8 @@ export class ShcService extends Construct {
     this.confirmSignupFn = this.createService(
       this,
       "confirm-signup",
-      "auth",
-      props.userTable,
+      "tenant",
+      props.tenantTable,
       props.eventbus,
       this.layer
     );
@@ -97,8 +97,8 @@ export class ShcService extends Construct {
     this.signinFn = this.createService(
       this,
       "signin",
-      "auth",
-      props.userTable,
+      "tenant",
+      props.tenantTable,
       props.eventbus,
       this.layer
     );
@@ -119,8 +119,8 @@ export class ShcService extends Construct {
     this.signoutFn = this.createService(
       this,
       "signout",
-      "auth",
-      props.userTable,
+      "tenant",
+      props.tenantTable,
       props.eventbus,
       this.layer
     );
@@ -135,14 +135,17 @@ export class ShcService extends Construct {
 
     // Add the userpooid and userpool clientId as environement variable
     this.signoutFn.addEnvironment("USER_POOL_ID", props.userPoolId);
-    this.signoutFn.addEnvironment("USER_POOL_CLIENT_ID", props.userPoolClientId);
+    this.signoutFn.addEnvironment(
+      "USER_POOL_CLIENT_ID",
+      props.userPoolClientId
+    );
 
     // currentUserFn
     this.currentUserFn = this.createService(
       this,
       "current-user",
-      "auth",
-      props.userTable,
+      "tenant",
+      props.tenantTable,
       props.eventbus,
       this.layer
     );
@@ -163,17 +166,17 @@ export class ShcService extends Construct {
     );
 
     // postConfirmationFn
-    this.postConfirmationFn = this.createService(
+    this.postConfirmationSignupFn = this.createService(
       this,
-      "post-confirmation",
-      "auth",
-      props.userTable,
+      "post-signup-confirmation",
+      "tenant",
+      props.tenantTable,
       props.eventbus,
       this.layer
     );
 
     // AWS Lambda functions need permissions to interact with all the userpool
-    this.postConfirmationFn.addPermission("shc-CognitoPermission", {
+    this.postConfirmationSignupFn.addPermission("shc-CognitoPermission", {
       principal: new iam.ServicePrincipal("cognito-idp.amazonaws.com"),
       sourceArn: `arn:aws:cognito-idp:${cdk.Stack.of(this).region}:${
         cdk.Stack.of(this).account
@@ -181,8 +184,11 @@ export class ShcService extends Construct {
     });
 
     // Add the userpooid and userpool clientId as environement variable
-    this.postConfirmationFn.addEnvironment("USER_POOL_ID", props.userPoolId);
-    this.postConfirmationFn.addEnvironment(
+    this.postConfirmationSignupFn.addEnvironment(
+      "USER_POOL_ID",
+      props.userPoolId
+    );
+    this.postConfirmationSignupFn.addEnvironment(
       "USER_POOL_CLIENT_ID",
       props.userPoolClientId
     );
@@ -191,8 +197,8 @@ export class ShcService extends Construct {
     this.preTokenGenerationFn = this.createService(
       this,
       "pre-token-generation",
-      "auth",
-      props.userTable,
+      "tenant",
+      props.tenantTable,
       props.eventbus,
       this.layer
     );

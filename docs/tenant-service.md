@@ -9,6 +9,7 @@ For details, please see the [Pricing page](https://aws.amazon.com/jp/systems-man
 
 |Service name|Overview|
 |---|---|
+|[TenantSignupService](#tenantsignupservice)|This service is called when a new user is signin up as a tenant. |
 |[TenantOnboardService](#tenantonboardservice)|This service is called when adding a new tenant. Deploys an application client for the tenant and writes tenant metadata to DynamoDB. |
 |[TenantDescribeService](#tenantdescribeservice)|A service for referencing the attributes of the specified tenant. Queries DynamoDB for tenant information. |
 |[TenantUpdateService](#tenantupdateservice)|A service for updating the attributes of the specified tenant. Update tenant information on DynamoDB. |
@@ -25,6 +26,43 @@ For details, please see the [Pricing page](https://aws.amazon.com/jp/systems-man
 |[TenantDeregisterIdpService](#tenantderegisteridpservice)|A service for deleting external IdP information associated with the specified tenant. Remove the tenant's external identity provider from the Cognito user pool and update the application client settings. |
 
 ---
+## TenantSignupService
+
+This service is called when signing up a new tenant. a user will be created in the specified cognito user pool.
+
+### Input
+```json
+{
+  "email": <string>,
+  "password": <string>,
+  "firstName": <string>,
+  "lastName": <string>,
+  "country": <string>,
+}
+```
+
+* `email` (required): Specify the identifier of the newly created tenant. email cannot be changed later.
+* `password` (required): Password.
+* `firstName` (required): firstName.
+* `lastName` (required): lastName.
+* `country` (required): country.
+
+### Output
+```json
+{
+  "UserConfirmed": <boolean>,
+  "UserSub": <string>,  
+}
+```
+
+If the tenant is successfully added, the input value will be returned as is.
+
+### Errors
+  * *InvalidRequestError* : Error that occurs when the input from the user is not an acceptable value.
+  * *UsernameExistsException* : email already taken - User already exists ij the user pool.
+  * *InternalServerError* : There is a problem with internal processing.
+---
+
 ## TenantOnboardService
 
 This service is called when adding a new tenant. After selecting an available user pool, issue an application client for the tenant and write tenant metadata to DynamoDB. If no user pool is available, create a new user pool.

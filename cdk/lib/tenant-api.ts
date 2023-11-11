@@ -9,7 +9,7 @@ import * as lambda from "aws-cdk-lib/aws-lambda";
 import { Construct } from "constructs";
 
 // Properties for the protectedApi-construct
-export interface AuthApiProps {
+export interface TenantApiProps {
   // the lambda handler
   signupFn: lambda.Function;
   confirmSignupFn: lambda.Function;
@@ -21,23 +21,23 @@ export interface AuthApiProps {
 }
 
 // Construct
-export class ShcAuthApi extends Construct {
+export class ShcTenantApi extends Construct {
   readonly api: apigateway.LambdaRestApi;
 
   // Constructor
-  constructor(scope: Construct, id: string, props: AuthApiProps) {
+  constructor(scope: Construct, id: string, props: TenantApiProps) {
     super(scope, id);
 
-    // Setup the Authentication Service RestApi
-    // Auth microservices api gateway
-    this.api = new apigateway.RestApi(this, "shc-auth-api", {
-      restApiName: "shc-auth-api",
-      description: "Authentication Service RestApi",
+    // Setup the Tenantentication Service RestApi
+    // Tenant microservices api gateway
+    this.api = new apigateway.RestApi(this, "shc-tenant-api", {
+      restApiName: "shc-tenant-api",
+      description: "Tenant Service RestApi",
     });
 
-    /* this.api = new apigateway.LambdaRestApi(this, "shc-auth-api", {
-      restApiName: "shc-auth-api",
-      handler: props.authLambda,
+    /* this.api = new apigateway.LambdaRestApi(this, "shc-tenant-api", {
+      restApiName: "shc-tenant-api",
+      handler: props.tenantLambda,
       proxy: false,
       // deploy: false
     }); */
@@ -45,72 +45,72 @@ export class ShcAuthApi extends Construct {
     // add default gateway responses
     this.getDefaultGatewayResponses(this.api);
 
-    // root name = auth
-    const authApi = this.api.root.addResource("auth");
-    authApi.addCorsPreflight(this.getCorsOptions());
+    // root name = tenant
+    const tenantApi = this.api.root.addResource("tenant");
+    tenantApi.addCorsPreflight(this.getCorsOptions());
 
     // feature name = /signup
-    const signupAuthApi = authApi.addResource("signup");
-    const signupAuthIntegration = new apigateway.LambdaIntegration(
+    const signupTenantApi = tenantApi.addResource("signup");
+    const signupTenantIntegration = new apigateway.LambdaIntegration(
       props.signupFn,
       {
         proxy: true,
       }
     );
 
-    signupAuthApi.addMethod("POST", signupAuthIntegration, {
+    signupTenantApi.addMethod("POST", signupTenantIntegration, {
       methodResponses: this.getDefaultMethodResponses(),
     });
 
     // feature name = /signin
-    const signinAuthApi = authApi.addResource("signin");
-    const signinAuthIntegration = new apigateway.LambdaIntegration(
+    const signinTenantApi = tenantApi.addResource("signin");
+    const signinTenantIntegration = new apigateway.LambdaIntegration(
       props.signinFn,
       {
         proxy: true,
       }
     );
 
-    signinAuthApi.addMethod("POST", signinAuthIntegration, {
+    signinTenantApi.addMethod("POST", signinTenantIntegration, {
       methodResponses: this.getDefaultMethodResponses(),
     });
 
     // feature name = /signout
-    const signoutAuthApi = authApi.addResource("signout");
-    const signoutAuthIntegration = new apigateway.LambdaIntegration(
+    const signoutTenantApi = tenantApi.addResource("signout");
+    const signoutTenantIntegration = new apigateway.LambdaIntegration(
       props.signoutFn,
       {
         proxy: true,
       }
     );
 
-    signoutAuthApi.addMethod("GET", signoutAuthIntegration, {
+    signoutTenantApi.addMethod("GET", signoutTenantIntegration, {
       methodResponses: this.getDefaultMethodResponses(),
     });
 
     // feature name = /confirm-signup
-    const confirmSignupAuthApi = authApi.addResource("confirm-signup");
-    const confirmSignupAuthIntegration = new apigateway.LambdaIntegration(
+    const confirmSignupTenantApi = tenantApi.addResource("confirm-signup");
+    const confirmSignupTenantIntegration = new apigateway.LambdaIntegration(
       props.confirmSignupFn,
       {
         proxy: true,
       }
     );
 
-    confirmSignupAuthApi.addMethod("POST", confirmSignupAuthIntegration, {
+    confirmSignupTenantApi.addMethod("POST", confirmSignupTenantIntegration, {
       methodResponses: this.getDefaultMethodResponses(),
     });
 
     // feature name = /current-user
-    const currentUserAuthApi = authApi.addResource("current-user");
-    const currentUserAuthIntegration = new apigateway.LambdaIntegration(
+    const currentUserTenantApi = tenantApi.addResource("current-user");
+    const currentUserTenantIntegration = new apigateway.LambdaIntegration(
       props.currentUserFn,
       {
         proxy: true,
       }
     );
 
-    currentUserAuthApi.addMethod("GET", currentUserAuthIntegration, {
+    currentUserTenantApi.addMethod("GET", currentUserTenantIntegration, {
       methodResponses: this.getDefaultMethodResponses(),
     });
 
@@ -132,7 +132,7 @@ export class ShcAuthApi extends Construct {
       allowHeaders: [
         "Content-Type",
         "X-Amz-Date",
-        "Authorization",
+        "Tenantorization",
         "Identification",
         "X-Api-Key",
         "X-Amz-Security-Token",
@@ -174,7 +174,7 @@ export class ShcAuthApi extends Construct {
           "method.response.header.Access-Control-Allow-Headers": true,
           "method.response.header.Access-Control-Allow-Methods": true,
           "method.response.header.Access-Control-Allow-Origin": true,
-          "method.response.header.x-amzn-Remapped-WWW-Authenticate": true,
+          "method.response.header.x-amzn-Remapped-WWW-Tenantenticate": true,
         },
       },
       {
@@ -194,7 +194,7 @@ export class ShcAuthApi extends Construct {
   private getDefaultResponseHeader(): { [key: string]: string } {
     return {
       "Access-Control-Allow-Headers":
-        "'Content-Type,X-Amz-Date,Authorization,Identification,X-Api-Key,X-Amz-Security-Token'",
+        "'Content-Type,X-Amz-Date,Tenantorization,Identification,X-Api-Key,X-Amz-Security-Token'",
       "Access-Control-Allow-Methods": "'OPTIONS,POST'",
       "Access-Control-Allow-Origin": "'*'",
     };
@@ -223,13 +223,13 @@ export class ShcAuthApi extends Construct {
     //   responseHeaders: this.getDefaultResponseHeader()
     // });
 
-    // api.addGatewayResponse('authorizer-configuration-error', {
+    // api.addGatewayResponse('tenantorizer-configuration-error', {
     //   type: apigateway.ResponseType.AUTHORIZER_CONFIGURATION_ERROR,
     //   statusCode: '500',
     //   responseHeaders: this.getDefaultResponseHeader()
     // });
 
-    // api.addGatewayResponse('authorizer-failure', {
+    // api.addGatewayResponse('tenantorizer-failure', {
     //   type: apigateway.ResponseType.AUTHORIZER_FAILURE,
     //   statusCode: '500',
     //   responseHeaders: this.getDefaultResponseHeader()
@@ -277,7 +277,7 @@ export class ShcAuthApi extends Construct {
     //   responseHeaders: this.getDefaultResponseHeader()
     // });
 
-    // api.addGatewayResponse('missing-authentication-token', {
+    // api.addGatewayResponse('missing-tenantentication-token', {
     //   type: apigateway.ResponseType.MISSING_AUTHENTICATION_TOKEN,
     //   statusCode: '403',
     //   responseHeaders: this.getDefaultResponseHeader()
@@ -307,7 +307,7 @@ export class ShcAuthApi extends Construct {
     //   responseHeaders: this.getDefaultResponseHeader()
     // });
 
-    // api.addGatewayResponse('unauthorized', {
+    // api.addGatewayResponse('untenantorized', {
     //   type: apigateway.ResponseType.UNAUTHORIZED,
     //   statusCode: '401',
     //   responseHeaders: this.getDefaultResponseHeader()

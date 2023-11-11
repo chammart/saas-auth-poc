@@ -1,9 +1,9 @@
 {
-  "CdkStack": {
-    "shcappcognitouserPoolshcappcognitouserpoolclientID0DC1AC06": "2fpositn8p31otpmrh92q2nmra",
-    "shcappcognitouserPoolshcappcognitouserpoolIDAFAD4F75": "us-east-1_IpqaLgYhA",
-    "shcAuthApishcauthapiEndpointA0E380E8": "https://4fehrige7e.execute-api.us-east-1.amazonaws.com/prod/",
-    "shcAuthApiRestApiNameB6457AB4": "shc-auth-api",
-    "shcAuthApiapiUrl768BA9E9": "https://4fehrige7e.execute-api.us-east-1.amazonaws.com/prod/"
+  "saas-stack-dev": {
+    "shcTenantApishctenantapiEndpointE72CA7A1": "https://gzf4gldbv8.execute-api.us-east-1.amazonaws.com/prod/",
+    "shcappcognitouserPoolshcappcognitouserpoolclientID0DC1AC06": "ku0ekmgstp9dca23kgcubv2i2",
+    "shcappcognitouserPoolshcappcognitouserpoolIDAFAD4F75": "us-east-1_jKSRSgazd",
+    "shcTenantApiRestApiName70042777": "shc-tenant-api",
+    "shcTenantApiapiUrl057711ED": "https://gzf4gldbv8.execute-api.us-east-1.amazonaws.com/prod/"
   }
 }
